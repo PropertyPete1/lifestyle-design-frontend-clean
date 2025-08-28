@@ -983,6 +983,10 @@ function Dashboard() {
           window.location.href = '/settings';
           showNotification('⚙️ Opening Settings...');
           break;
+        case 'diagnostics':
+          window.location.href = '/diagnostics';
+          showNotification('📊 Opening Diagnostics...');
+          break;
         default:
           console.warn('Unknown menu action:', action);
           showNotification('❌ Unknown action: ' + action, 'error');
@@ -1177,6 +1181,10 @@ function Dashboard() {
                 <div className="menu-item" onClick={() => handleMenuClick('settings')}>
                   <div className="menu-item-icon">⚙</div>
                   <span>Settings</span>
+                </div>
+                <div className="menu-item" onClick={() => handleMenuClick('diagnostics')} data-testid="menu-diagnostics">
+                  <div className="menu-item-icon">📊</div>
+                  <span>Diagnostics</span>
                 </div>
               </div>
             </div>
