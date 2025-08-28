@@ -21,8 +21,11 @@ export default function DiagnosticsPage() {
     (async () => {
       try {
         const url = `${process.env.NEXT_PUBLIC_API_URL}/api/diagnostics/report?platform=instagram&days=90`;
-        const res = await fetch(url, { headers: { "Cache-Control": "no-cache" } });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const res = await fetch(url);
+        if (!res.ok) {
+          const txt = await res.text().catch(() => '');
+          throw new Error(`HTTP ${res.status}${txt ? ' – ' + txt : ''}`);
+        }
         const data = await res.json();
         setReport(data);
       } catch (e:any) {
@@ -48,7 +51,7 @@ export default function DiagnosticsPage() {
 
       {loading && <p>Loading…</p>}
       {error && (
-        <div className="rounded-lg border border-red-800 bg-red-950 p-6 text-red-100">{error}</div>
+        <div className="rounded-lg border border-red-800 bg-red-950 p-6 text-red-100 whitespace-pre-wrap">{error}</div>
       )}
 
       {!loading && report && (
