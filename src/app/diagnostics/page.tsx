@@ -9,6 +9,7 @@ interface Report {
   deltas?: { medianPlays?: number; medianPlaysChangePct?: number; frequencyPerWeekBaseline:number; frequencyPerWeekCurrent:number };
   byTimeHeatmap?: Array<{ dow:number; hour:number; medianPlays?: number; count:number }>;
   topFeatureShifts?: Shift[];
+  correlations?: Array<{ feature:string; withMedian?: number; withoutMedian?: number; liftPct?: number }>;
   rankedRecommendations?: Rec[];
 }
 
@@ -92,6 +93,27 @@ export default function DiagnosticsPage() {
                 </li>
               ))}
             </ul>
+          </section>
+
+          <section className="bg-gray-900 border border-gray-800 rounded-lg p-5">
+            <h2 className="text-xl font-semibold mb-2">What Moves Views</h2>
+            {(!report.correlations || report.correlations.length===0) ? (
+              <p className="text-gray-400">No correlation signals detected in the current window.</p>
+            ) : (
+              <ul className="space-y-2">
+                {report.correlations?.map((c,i)=> (
+                  <li key={i} className="flex items-center justify-between border-b border-gray-800/50 pb-2">
+                    <span className="text-gray-200">{c.feature}</span>
+                    <span className="text-xs text-gray-400">
+                      with: <b>{c.withMedian ?? '—'}</b> vs without: <b>{c.withoutMedian ?? '—'}</b>
+                      {typeof c.liftPct==='number' && (
+                        <span className={`ml-3 px-2 py-0.5 rounded ${c.liftPct>=0?'bg-green-700/50':'bg-red-700/50'}`}>{c.liftPct>=0?'+':''}{c.liftPct}%</span>
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
 
           <section className="bg-gray-900 border border-gray-800 rounded-lg p-5">
